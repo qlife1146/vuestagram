@@ -1,10 +1,6 @@
 <template>
   <div class="header">
-    <ul
-      class="header-button-left"
-      v-if="CurrentPage != 0"
-      @click="CurrentPage = 0"
-    >
+    <ul class="header-button-left" v-if="CurrentPage != 0" @click="CurrentPage = 0">
       <li>Cancel</li>
     </ul>
     <!-- <ul class="header-button-right" @click="Posting"> -->
@@ -13,15 +9,37 @@
       <li v-if="CurrentPage == 1" @click="CurrentPage = 2">Next</li>
       <li v-if="CurrentPage == 2" @click="Posting">Post</li>
     </ul>
-    <img
-      src="./assets/logo.png"
-      class="logo"
-      @click="console.error('error test')"
-    />
+    <img src="./assets/logo.png" class="logo" @click="CurrentPage = 3" />
+    <!-- <img src=a"./assets/logo.png" class="logo" @click="console.error('error test')" /> -->
     <!-- <button @click="CurrentPage = 0">게시물</button>
     <button @click="CurrentPage = 1">필터</button>
     <button @click="CurrentPage = 2">글</button> -->
   </div>
+
+  <!-- <p>{{ name }}</p>
+  <p>{{ now() }}</p> -->
+  <!-- 데이터를 불러도 computed는 그대로 -->
+  <!-- <p>{{ nowCom }}</p>
+  <p>{{ cnt }}</p>
+  <button @click="cnt++">+++</button> -->
+
+  <!-- <p>{{ dt.name }}</p>
+  <p>{{ age }}</p>
+  <p>{{ likes }}</p> -->
+
+  <!-- vuex store 예제 -->
+  <!-- <h4>{{ $store.state.name }}</h4>-->
+  <!-- <h4>{{ $store.state.age }}</h4> -->
+
+  <!-- 비권장: 직접 수정 금지 -->
+  <!-- 1. store.js에서 수정 방법 사전 정의 -->
+  <!-- 2. 컴포넌트에서 불러와 수정 -->
+  <!-- <button @click="$store.commit('changeName')"></button> -->
+  <!-- <button @click="increaseAge(10)">+1</button> -->
+  <!-- <button @click="$store.commit('increaseAge', 10)">+1</button> -->
+  <!-- 젠장, 또 commit이야. 난 숭배해야만 해. -->
+  <!-- <button @click="$store.dispatch('getData')">more button</button> -->
+  <!-- commit은 mutations, dispatch는 actions -->
 
   <!-- 오오오 method도 보낼 수 있어 -->
   <ContainerView
@@ -57,11 +75,13 @@
 <script>
 import axios from "axios";
 import PostData from "./stores/PostData";
+import { mapMutations, mapState } from "vuex";
 
 import ContainerView from "./components/ContainerView.vue";
 export default {
   data() {
     return {
+      cnt: 0,
       PostData: PostData,
       ClickNum: 0,
       CurrentPage: 0,
@@ -85,12 +105,24 @@ export default {
   },
   name: "App",
   components: { ContainerView: ContainerView },
+  // computed: 자원 절약용, 부르기 전까지는 재실행x
+  computed: {
+    nowCom() {
+      return new Date();
+    },
+    dt() {
+      return this.$store.state;
+    },
+    ...mapState(["name", "age", "likes"]),
+  },
   methods: {
+    ...mapMutations(["setMore", "increaseAge"]),
+    now() {
+      return new Date();
+    },
     more() {
       axios
-        .get(
-          "https://codingapple1.github.io/vue/more" + this.ClickNum + ".json"
-        )
+        .get("https://codingapple1.github.io/vue/more" + this.ClickNum + ".json")
         .then((result) => {
           this.PostData.push(result.data);
           // console.log(result.data);

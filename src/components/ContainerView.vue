@@ -1,7 +1,7 @@
 <template>
   <div v-if="CurrentPage == 0">
     <!-- 잊지 말자... 하위에다 v-for할 거면 [i]를 여기서 해야한다는 것을... -->
-    <PostView :PostData="PostData[i]" v-for="(post, i) in PostData" :key="i" />
+    <PostView :PostData="PostData[i]" v-for="(post, i) in PostData" :key="i" :index="i" />
     <!-- <PostView :PostData="PostData" />
     <PostView :PostData="PostData" /> -->
     <button @click="more">more</button>
@@ -48,17 +48,18 @@
         @input="$emit('write', $event.target.value)"
         placeholder="Write here!!"
       ></textarea> -->
-      <textarea
-        class="write-box"
-        @input="write"
-        placeholder="Write here!!"
-      ></textarea>
+      <textarea class="write-box" @input="write" placeholder="Write here!!"></textarea>
     </div>
+  </div>
+
+  <div v-if="CurrentPage == 3">
+    <MyPage :one="2" />
   </div>
 </template>
 
 <script>
 import FilterBox from "./FilterBox.vue";
+import MyPage from "./MyPage.vue";
 import PostView from "./PostView.vue";
 
 export default {
@@ -119,6 +120,7 @@ export default {
     // components는 vue 파일
     PostView: PostView,
     FilterBox: FilterBox,
+    MyPage: MyPage,
   },
   props: {
     //props는 데이터 파일 등
